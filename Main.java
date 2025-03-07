@@ -2,6 +2,8 @@ import java.util.Vector;
 import IRUtilities.*;
 import java.io.*;
 import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
   public static void main(String[] args) {
@@ -14,24 +16,26 @@ public class Main {
         // Get Link and words
         Crawler crawl = new Crawler(url);
         spiderResult crawlResult = crawl.extractAll();
-
-        System.out.println(crawlResult);
-        
-        // System.out.println("Link List: ");
-        // System.out.println(linkList);
-        // System.out.println("Word Lists: ");
-        // System.out.println(wordList);
+		Map<String, Integer> keywordFreq = new HashMap<>();
 
         // Stem and remove stop words
 		StopStem stopStem = new StopStem("stopwords.txt");
-        for(String word : wordList){
+        for(String word : crawlResult.keywordFreq.keySet()){
             if (stopStem.isStopWord(word)){}
             else
                 extractedText.add(stopStem.stem(word));
         }
 
-        // System.out.println(extractedText);
+        // extracted words to spider result  
+        for (String keyword : extractedText) {
+			keywordFreq.put(keyword, keywordFreq.getOrDefault(keyword, 0) + 1);
+        }
+        crawlResult.keywordFreq = keywordFreq;
 
+        // print out result
+        // System.out.println(crawlResult.toString());
+
+        // database
         InvertedIndex index = new InvertedIndex("project", "ht1");
     } 
     catch (Exception e) {

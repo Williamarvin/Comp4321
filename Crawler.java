@@ -18,8 +18,6 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.text.html.HTMLEditorKit.Parser;
-import org.w3c.dom.NodeList;
 
 class spiderResult {
     String title;
@@ -37,6 +35,16 @@ class spiderResult {
         this.keywordFreq = keywordFreq;
         this.pageSize = pageSize;
         this.childLink = childLink;
+    }
+
+	@Override
+    public String toString() {
+        return "Title: " + title + "\n" +
+               "URL: " + url + "\n" +
+               "Date: " + date + "\n" +
+               "Page Size: " + pageSize + " bytes\n" +
+               "Keywords: " + keywordFreq + "\n" +
+               "Child Links: " + childLink;
     }
 }
 
@@ -102,13 +110,6 @@ public class Crawler
 
 	public String extractTitle() throws ParserException {
         String title = "";
-        Parser parser = new Parser(url);
-        NodeList nodeList = parser.extractAllNodesThatMatch(new NodeClassFilter(TitleTag.class));
-
-        if (nodeList.size() > 0) {
-            TitleTag titleTag = (TitleTag) nodeList.elementAt(0);
-            title = titleTag.getTitle();
-        }
 
         return title;
 	}
@@ -116,39 +117,11 @@ public class Crawler
 	public String extractDate() throws ParserException{
 		String lastModified = "Unknown";
 
-        try {
-            URL urlObj = new URL(url);
-            URLConnection connection = urlObj.openConnection();
-
-            if (connection instanceof HttpURLConnection) {
-                HttpURLConnection httpConnection = (HttpURLConnection) connection;
-                long date = httpConnection.getLastModified();
-
-                if (date != 0) {
-                    lastModified = new java.util.Date(date).toString();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         return lastModified;
 	}
 
 	public int extractPageSize() throws ParserException{
 		int pageSize = 0;
-
-        try {
-            URL urlObj = new URL(url);
-            URLConnection connection = urlObj.openConnection();
-            int size = connection.getContentLength();
-
-            if (size != -1) {
-                pageSize = size;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         return pageSize;
 	}
