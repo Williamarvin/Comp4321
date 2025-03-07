@@ -19,8 +19,8 @@ public class InvertedIndex {
         long recid = recman.getNamedObject(objectname);
 
         if (recid != 0) {
-            hashtable = HTree.load(recman, recid); 
-        }else {
+            hashtable = HTree.load(recman, recid);
+        } else {
             hashtable = HTree.createInstance(recman);
             recman.setNamedObject("ht1", hashtable.getRecid());
         }

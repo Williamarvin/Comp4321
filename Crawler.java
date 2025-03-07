@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 class spiderResult {
+
     String title;
     String url;
     String date;
@@ -37,65 +38,63 @@ class spiderResult {
         this.childLink = childLink;
     }
 
-	@Override
+    @Override
     public String toString() {
-        return "Title: " + title + "\n" +
-               "URL: " + url + "\n" +
-               "Date: " + date + "\n" +
-               "Page Size: " + pageSize + " bytes\n" +
-               "Keywords: " + keywordFreq + "\n" +
-               "Child Links: " + childLink;
+        return "Title: " + title + "\n"
+                + "URL: " + url + "\n"
+                + "Date: " + date + "\n"
+                + "Page Size: " + pageSize + " bytes\n"
+                + "Keywords: " + keywordFreq + "\n"
+                + "Child Links: " + childLink;
     }
 }
 
-public class Crawler
-{
-	private String url;
+public class Crawler {
 
-	Crawler(String _url)
-	{
-		url = _url;
-	}
-	public Map<String, Integer> extractKeyword() throws ParserException
-	{
-		// extract words in url and return them
-		// use StringTokenizer to tokenize the result from StringBean
-		// ADD YOUR CODES HERE
+    private String url;
 
-		Vector<String> words = new Vector<>();
-		Map<String, Integer> keywordFreq = new HashMap<>();
-        
+    Crawler(String _url) {
+        url = _url;
+    }
+
+    public Map<String, Integer> extractKeyword() {
+        // extract words in url and return them
+        // use StringTokenizer to tokenize the result from StringBean
+        // ADD YOUR CODES HERE
+
+        Vector<String> words = new Vector<>();
+        Map<String, Integer> keywordFreq = new HashMap<>();
+
         StringBean bean = new StringBean();
         bean.setLinks(false); // Do not include links in extracted text
         bean.setCollapse(true); // Remove extra whitespace
         bean.setReplaceNonBreakingSpaces(true); // Normalize spaces
-        
+
         bean.setURL(url);
-        
+
         // Tokenise
         StringTokenizer tokenizer = new StringTokenizer(bean.getStrings());
         while (tokenizer.hasMoreTokens()) {
             words.add(tokenizer.nextToken());
         }
-		
-		// keyword: freq
-		for (String keyword : words) {
-			keywordFreq.put(keyword, keywordFreq.getOrDefault(keyword, 0) + 1);
+
+        // keyword: freq
+        for (String keyword : words) {
+            keywordFreq.put(keyword, keywordFreq.getOrDefault(keyword, 0) + 1);
         }
 
         return keywordFreq;
-	}
+    }
 
-	public Vector<String> extractLinks() throws ParserException
-	{
-		// extract links in url and return them
-		// ADD YOUR CODES HERE
-		Vector<String> links = new Vector<>();
-        
+    public Vector<String> extractLinks(){
+        // extract links in url and return them
+        // ADD YOUR CODES HERE
+        Vector<String> links = new Vector<>();
+
         try {
             LinkBean linkBean = new LinkBean();
             linkBean.setURL(url);
-            
+
             URL[] extractedUrls = linkBean.getLinks();
 
             for (URL link : extractedUrls) {
@@ -104,29 +103,29 @@ public class Crawler
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        return links;
-	}
 
-	public String extractTitle() throws ParserException {
+        return links;
+    }
+
+    public String extractTitle(){
         String title = "";
 
         return title;
-	}
+    }
 
-	public String extractDate() throws ParserException{
-		String lastModified = "Unknown";
+    public String extractDate(){
+        String lastModified = "Unknown";
 
         return lastModified;
-	}
+    }
 
-	public int extractPageSize() throws ParserException{
-		int pageSize = 0;
+    public int extractPageSize(){
+        int pageSize = 0;
 
         return pageSize;
-	}
+    }
 
-	public spiderResult extractAll() throws ParserException{
+    public spiderResult extractAll() {
         String title = extractTitle();
         String link = url;
         String date = extractDate();
@@ -134,44 +133,37 @@ public class Crawler
         int pageSize = extractPageSize();
         Vector<String> childLinks = extractLinks();
 
-		spiderResult newSpiderResult = new spiderResult(title, link, date, keywordFreq, pageSize, childLinks);
+        spiderResult newSpiderResult = new spiderResult(title, link, date, keywordFreq, pageSize, childLinks);
 
-		return newSpiderResult;
-	}
+        return newSpiderResult;
+    }
 
-	
-	public static void main (String[] args)
-	{
-		try
-		{
-			Crawler crawler = new Crawler("http://www.cs.ust.hk/~dlee/4321/");
+    public static void main(String[] args) {
+        try {
+            Crawler crawler = new Crawler("http://www.cs.ust.hk/~dlee/4321/");
 
-			Map<String, Integer> words = crawler.extractKeyword();		
-			
-			System.out.println("Words in "+crawler.url+" (size = "+words.size()+") :");
-			for(int i = 0; i < words.size(); i++)
-				if(i<5 || i>words.size()-6){
-					System.out.println(words.get(i));
-				} else if(i==5){
-					System.out.println("...");
-				}
-			System.out.println("\n\n");
-			
+            Map<String, Integer> words = crawler.extractKeyword();
 
-	
-			Vector<String> links = crawler.extractLinks();
-			System.out.println("Links in "+crawler.url+":");
-			for(int i = 0; i < links.size(); i++)		
-				System.out.println(links.get(i));
-			System.out.println("");
-			
-		}
-		catch (ParserException e)
-            	{
-                	e.printStackTrace ();
-            	}
+            System.out.println("Words in " + crawler.url + " (size = " + words.size() + ") :");
+            for (int i = 0; i < words.size(); i++) {
+                if (i < 5 || i > words.size() - 6) {
+                    System.out.println(words.get(i));
+                } else if (i == 5) {
+                    System.out.println("...");
+                }
+            }
+            System.out.println("\n\n");
 
-	}
+            Vector<String> links = crawler.extractLinks();
+            System.out.println("Links in " + crawler.url + ":");
+            for (int i = 0; i < links.size(); i++) {
+                System.out.println(links.get(i));
+            }
+            System.out.println("");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 }
-
-	
