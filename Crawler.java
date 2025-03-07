@@ -14,7 +14,17 @@ import java.net.URL;
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+class spiderResult {
+    String title;
+    String url;
+    String date;
+    Map<String, Integer> keywordFreq = new HashMap<>();
+    int pageSize;
+    Vector<String> childLink;
+}
 
 public class Crawler
 {
@@ -24,13 +34,14 @@ public class Crawler
 	{
 		url = _url;
 	}
-	public Vector<String> extractWords() throws ParserException
+	public Map<String, Integer> extractKeyword() throws ParserException
 	{
 		// extract words in url and return them
 		// use StringTokenizer to tokenize the result from StringBean
 		// ADD YOUR CODES HERE
 
 		Vector<String> words = new Vector<>();
+		Map<String, Integer> keywordFreq = new HashMap<>();
         
         StringBean bean = new StringBean();
         bean.setLinks(false); // Do not include links in extracted text
@@ -41,17 +52,19 @@ public class Crawler
         
         // Tokenise
         StringTokenizer tokenizer = new StringTokenizer(bean.getStrings());
-
-        // Add tokens (words) to the vector
         while (tokenizer.hasMoreTokens()) {
             words.add(tokenizer.nextToken());
         }
+		
+		// keyword: freq
+		for (String keyword : words) {
+			keywordFreq.put(keyword, keywordFreq.getOrDefault(keyword, 0) + 1);
+        }
 
-        return words;
+        return keywordFreq;
 	}
 
 	public Vector<String> extractLinks() throws ParserException
-
 	{
 		// extract links in url and return them
 		// ADD YOUR CODES HERE
@@ -72,6 +85,60 @@ public class Crawler
         
         return links;
 	}
+
+	public String extractTitle() throws ParserException {
+        String title = "";
+        Parser parser = new Parser(url);
+        NodeList nodeList = parser.extractAllNodesThatMatch(new NodeClassFilter(TitleTag.class));
+
+        if (nodeList.size() > 0) {
+            TitleTag titleTag = (TitleTag) nodeList.elementAt(0);
+            title = titleTag.getTitle();
+        }
+
+        return title;
+	}
+
+	public String extractDate() throws ParserException{
+		String lastModified = "Unknown";
+
+        try {
+            URL urlObj = new URL(url);
+            URLConnection connection = urlObj.openConnection();
+
+            if (connection instanceof HttpURLConnection) {
+                HttpURLConnection httpConnection = (HttpURLConnection) connection;
+                long date = httpConnection.getLastModified();
+
+                if (date != 0) {
+                    lastModified = new java.util.Date(date).toString();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return lastModified;
+	}
+
+	public String extractPageSize() throws ParserException{
+		String pageSize = "Unknown";
+
+        try {
+            URL urlObj = new URL(url);
+            URLConnection connection = urlObj.openConnection();
+            int size = connection.getContentLength();
+
+            if (size != -1) {
+                pageSize = size + " bytes";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return pageSize;
+	}
+
 	
 	public static void main (String[] args)
 	{
@@ -79,7 +146,7 @@ public class Crawler
 		{
 			Crawler crawler = new Crawler("http://www.cs.ust.hk/~dlee/4321/");
 
-			Vector<String> words = crawler.extractWords();		
+			Vector<String> words = crawler.extractKeyword();		
 			
 			System.out.println("Words in "+crawler.url+" (size = "+words.size()+") :");
 			for(int i = 0; i < words.size(); i++)

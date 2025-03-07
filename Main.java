@@ -14,7 +14,7 @@ public class Main {
         // Get Link and words
         Crawler crawl = new Crawler(url);
         Vector<String> linkList = crawl.extractLinks();
-        Vector<String> wordList = crawl.extractWords();
+        Vector<String> wordList = crawl.extractKeyword();
         
         // System.out.println("Link List: ");
         // System.out.println(linkList);
@@ -30,7 +30,7 @@ public class Main {
         }
 
         // System.out.println(extractedText);
-        
+
         InvertedIndex index = new InvertedIndex("project", "ht1");
     } 
     catch (Exception e) {

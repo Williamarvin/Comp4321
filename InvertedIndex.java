@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.function.Supplier;
 
-
 public class InvertedIndex {
 
     private RecordManager recman;
