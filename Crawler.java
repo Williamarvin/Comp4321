@@ -1,3 +1,4 @@
+import java.net.HttpURLConnection;
 import java.util.Vector;
 import org.htmlparser.beans.StringBean;
 import org.htmlparser.Node;
@@ -11,19 +12,32 @@ import org.htmlparser.util.ParserException;
 import java.util.StringTokenizer;
 import org.htmlparser.beans.LinkBean;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.text.html.HTMLEditorKit.Parser;
+import org.w3c.dom.NodeList;
 
 class spiderResult {
     String title;
     String url;
     String date;
-    Map<String, Integer> keywordFreq = new HashMap<>();
+    Map<String, Integer> keywordFreq;
     int pageSize;
     Vector<String> childLink;
+
+    // Constructor to initialize all attributes
+    public spiderResult(String title, String url, String date, Map<String, Integer> keywordFreq, int pageSize, Vector<String> childLink) {
+        this.title = title;
+        this.url = url;
+        this.date = date;
+        this.keywordFreq = keywordFreq;
+        this.pageSize = pageSize;
+        this.childLink = childLink;
+    }
 }
 
 public class Crawler
@@ -121,8 +135,8 @@ public class Crawler
         return lastModified;
 	}
 
-	public String extractPageSize() throws ParserException{
-		String pageSize = "Unknown";
+	public int extractPageSize() throws ParserException{
+		int pageSize = 0;
 
         try {
             URL urlObj = new URL(url);
@@ -130,13 +144,26 @@ public class Crawler
             int size = connection.getContentLength();
 
             if (size != -1) {
-                pageSize = size + " bytes";
+                pageSize = size;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return pageSize;
+	}
+
+	public spiderResult extractAll() throws ParserException{
+        String title = extractTitle();
+        String link = url;
+        String date = extractDate();
+        Map<String, Integer> keywordFreq = extractKeyword();
+        int pageSize = extractPageSize();
+        Vector<String> childLinks = extractLinks();
+
+		spiderResult newSpiderResult = new spiderResult(title, link, date, keywordFreq, pageSize, childLinks);
+
+		return newSpiderResult;
 	}
 
 	
@@ -146,7 +173,7 @@ public class Crawler
 		{
 			Crawler crawler = new Crawler("http://www.cs.ust.hk/~dlee/4321/");
 
-			Vector<String> words = crawler.extractKeyword();		
+			Map<String, Integer> words = crawler.extractKeyword();		
 			
 			System.out.println("Words in "+crawler.url+" (size = "+words.size()+") :");
 			for(int i = 0; i < words.size(); i++)
