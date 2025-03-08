@@ -1,3 +1,4 @@
+
 import java.io.Console;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
@@ -76,7 +77,22 @@ public class InvertedIndex {
         }
     }
 
-    public static void main(String[] args) {
+    public void addCrawlResult(String key, Object object) throws IOException {
+        Object newObject = object;
+        hashtable.put(key, newObject);
+    }
+
+    public void printCrawlResult() throws IOException {
+        FastIterator iter = hashtable.keys();
+        String key;
+
+        while ((key = (String) iter.next()) != null) {
+            System.out.print(key + " : ");
+            System.out.println(hashtable.get(key));
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
         try {
             InvertedIndex index = new InvertedIndex("lab1", "ht1");
 
@@ -103,5 +119,30 @@ public class InvertedIndex {
             System.err.println(ex.toString());
         }
 
+        Vector<String> words = new Vector<>();
+
+        Map<String, Integer> keywordFreq = new HashMap<>();
+        keywordFreq.put("", 3);
+
+        // Create a Vector for child links
+        Vector<String> wordss = new Vector<>();
+        words.add("http://example.com/child1");
+        words.add("http://example.com/child2");
+
+        // Create a SpiderResult object
+        SpiderResult results = new SpiderResult(
+                "Example Title",
+                "http://example.com",
+                "2025-03-08",
+                keywordFreq,
+                1024,
+                wordss
+        );
+
+        InvertedIndex index1 = new InvertedIndex("lab2", "ht2");
+
+        index1.addCrawlResult("id1", results);
+
+        index1.printCrawlResult();
     }
 }

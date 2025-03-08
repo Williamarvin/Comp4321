@@ -8,10 +8,6 @@
 
 */ 
 
-package IRUtilities;
-
-import java.io.*;
-
 class NewString {
   public String str;
 

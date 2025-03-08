@@ -1,7 +1,12 @@
+// package project_prototype;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import jdbm.htree.HTree;
 
 public class Main {
 
@@ -12,7 +17,7 @@ public class Main {
         try {
             // Get Link and words
             Crawler crawl = new Crawler(url);
-            spiderResult crawlResult = crawl.extractAll();
+            SpiderResult crawlResult = crawl.extractAll();
             Map<String, Integer> keywordFreq = new HashMap<>();
 
             // Stem and remove stop words
@@ -24,17 +29,19 @@ public class Main {
                 }
             }
 
-            // extracted words to spider result  
+            // extracted words to spider result
             for (String keyword : extractedText) {
                 keywordFreq.put(keyword, keywordFreq.getOrDefault(keyword, 0) + 1);
             }
             crawlResult.keywordFreq = keywordFreq;
 
-            // print out result
-            System.out.println(crawlResult.toString());
-
             // database
             InvertedIndex index = new InvertedIndex("project", "ht1");
+            List<String> newList = new ArrayList<>();
+
+            index.addCrawlResult(url, crawlResult);
+            index.printCrawlResult();
+
         } catch (Exception e) {
             System.out.println("Error:" + e.getMessage());
         }

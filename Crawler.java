@@ -1,3 +1,4 @@
+
 import java.net.HttpURLConnection;
 import java.util.Vector;
 import org.htmlparser.beans.StringBean;
@@ -18,36 +19,6 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-class spiderResult {
-
-    String title;
-    String url;
-    String date;
-    Map<String, Integer> keywordFreq;
-    int pageSize;
-    Vector<String> childLink;
-
-    // Constructor to initialize all attributes
-    public spiderResult(String title, String url, String date, Map<String, Integer> keywordFreq, int pageSize, Vector<String> childLink) {
-        this.title = title;
-        this.url = url;
-        this.date = date;
-        this.keywordFreq = keywordFreq;
-        this.pageSize = pageSize;
-        this.childLink = childLink;
-    }
-
-    @Override
-    public String toString() {
-        return "Title: " + title + "\n"
-                + "URL: " + url + "\n"
-                + "Date: " + date + "\n"
-                + "Page Size: " + pageSize + " bytes\n"
-                + "Keywords: " + keywordFreq + "\n"
-                + "Child Links: " + childLink;
-    }
-}
 
 public class Crawler {
 
@@ -86,7 +57,7 @@ public class Crawler {
         return keywordFreq;
     }
 
-    public Vector<String> extractLinks(){
+    public Vector<String> extractLinks() {
         // extract links in url and return them
         // ADD YOUR CODES HERE
         Vector<String> links = new Vector<>();
@@ -107,25 +78,25 @@ public class Crawler {
         return links;
     }
 
-    public String extractTitle(){
+    public String extractTitle() {
         String title = "";
 
         return title;
     }
 
-    public String extractDate(){
+    public String extractDate() {
         String lastModified = "Unknown";
 
         return lastModified;
     }
 
-    public int extractPageSize(){
+    public int extractPageSize() {
         int pageSize = 0;
 
         return pageSize;
     }
 
-    public spiderResult extractAll() {
+    public SpiderResult extractAll() {
         String title = extractTitle();
         String link = url;
         String date = extractDate();
@@ -133,7 +104,7 @@ public class Crawler {
         int pageSize = extractPageSize();
         Vector<String> childLinks = extractLinks();
 
-        spiderResult newSpiderResult = new spiderResult(title, link, date, keywordFreq, pageSize, childLinks);
+        SpiderResult newSpiderResult = new SpiderResult(title, link, date, keywordFreq, pageSize, childLinks);
 
         return newSpiderResult;
     }
